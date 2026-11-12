@@ -1,7 +1,7 @@
 extends CanvasLayer
 ## Responsive touch HUD: landscape phones + keyboard/desktop.
 var game: Node3D
-var layer: Control
+var screen_root: Control
 var match_ui: Control
 var menu: Control
 var touch: Dictionary = {"left": false, "right": false, "guard": false}
@@ -22,15 +22,15 @@ var screen_size := Vector2(1280, 720)
 
 func setup(owner_game: Node3D) -> void:
 	game = owner_game
-	layer = Control.new()
-	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(layer)
+	screen_root = Control.new()
+	screen_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(screen_root)
 	match_ui = Control.new()
 	match_ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	layer.add_child(match_ui)
+	screen_root.add_child(match_ui)
 	menu = Control.new()
 	menu.mouse_filter = Control.MOUSE_FILTER_STOP
-	layer.add_child(menu)
+	screen_root.add_child(menu)
 	for _i in range(2):
 		var hp := _rect(match_ui, Color("#161923"))
 		hp_tracks.append(hp)
@@ -64,7 +64,7 @@ func setup(owner_game: Node3D) -> void:
 			button.button_up.connect(func(): touch[key] = false)
 		else:
 			button.pressed.connect(func(): game.player_action(key))
-	flash = _rect(layer, Color(1, 0.12, 0.07, 0.0))
+	flash = _rect(screen_root, Color(1, 0.12, 0.07, 0.0))
 	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	flash.visible = false
 	get_viewport().size_changed.connect(_layout)
@@ -113,10 +113,10 @@ func _button(parent: Control, txt: String, col: Color, font_size: int) -> Button
 
 func _layout() -> void:
 	screen_size = get_viewport().get_visible_rect().size
-	if layer == null:
+	if screen_root == null:
 		return
-	layer.position = Vector2.ZERO
-	layer.size = screen_size
+	screen_root.position = Vector2.ZERO
+	screen_root.size = screen_size
 	match_ui.size = screen_size
 	menu.size = screen_size
 	flash.position = Vector2.ZERO
