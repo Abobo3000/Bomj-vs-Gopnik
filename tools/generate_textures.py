@@ -12,9 +12,6 @@ SIZE = 512
 SEED = 1997
 OUT = "assets/textures"
 os.makedirs(OUT, exist_ok=True)
-if all(os.path.isfile(os.path.join(OUT, name+"_normal.png")) for name in ["concrete","asphalt","tile","rust","leather"]):
-    print("TEXTURES_ALREADY_PRESENT")
-    raise SystemExit(0)
 
 def chunk(name, data):
     return struct.pack(">I", len(data)) + name + data + struct.pack(">I", zlib.crc32(name + data) & 0xffffffff)
@@ -59,19 +56,19 @@ def produce(kind):
                 joints=0.3 if seams<2 else 1.0
                 stains=max(0,fbm(x+113,y+53,33)-0.54)*1.5
                 drip=max(0,noise(x,y,70,56)-.60) * 0.45
-                val=(0.58+n*0.43-stains*.65-drip*.35)*joints
-                rgb=(val*154+3, val*153+1, val*158)
-                hh=n*.9 + fine*.04 + (1-joints)*(-0.1)
+                val=(0.66+n*0.24-stains*.36-drip*.27)*joints
+                rgb=(val*174+3, val*174+4, val*179+5)
+                hh=n*.51 + fine*.03 + (1-joints)*(-0.1)
                 r=0.90
             elif kind=="asphalt":
-                puddle=noise(x,y,84,109)<.39
+                puddle=noise(x,y,84,109)<.29
                 grains=hash2(x*7,y*13,37)
-                val=0.36+n*.28+grains*.09
+                val=0.43+n*.20+grains*.055
                 if puddle:
-                    val*=.60
-                rgb=(val*91,val*103,val*115)
-                hh=n*.45 + grains*.17 + (0.08 if puddle else 0.0)
-                r=.20 if puddle else .75
+                    val*=.89
+                rgb=(val*140+4,val*151+5,val*165+8)
+                hh=n*.27 + grains*.11 + (0.015 if puddle else 0.0)
+                r=.36 if puddle else .75
             elif kind=="rust":
                 rust=noise(x,y,67,89)>.49
                 val=0.42+n*.34
