@@ -120,7 +120,7 @@ func _physics_process(delta: float) -> void:
 	if ui != null:
 		ui.set_flash(hit_flash)
 	camera_tension = move_toward(camera_tension, 0.0, delta * 1.2)
-	var center := (player.position.x + cpu.position.x) * 0.5 if is_instance_valid(player) and is_instance_valid(cpu) else 0.0
+	var center: float = (player.position.x + cpu.position.x) * 0.5 if is_instance_valid(player) and is_instance_valid(cpu) else 0.0
 	var cam_x := clampf(center * 0.24, -1.0, 1.0)
 	camera.position = Vector3(cam_x + rng.randf_range(-0.08, 0.08) * camera_shake, 3.82 + rng.randf_range(-0.06, 0.06) * camera_shake, 12.2 - camera_tension * 1.1)
 	camera.look_at(Vector3(cam_x, 1.62, -1.2), Vector3.UP)
@@ -178,7 +178,7 @@ func _tick_cpu(delta: float) -> void:
 	opponent_decision = rng.randf_range(pace * 0.70, pace * 1.30)
 	if cpu.action != "":
 		return
-	var sees_attack := player.action in ["punch", "kick", "special1", "special2"]
+	var sees_attack: bool = player.action in ["punch", "kick", "special1", "special2"]
 	var defend_chance: float = [0.12, 0.31, 0.48][ai_level]
 	if sees_attack and distance < 2.35 and rng.randf() < defend_chance:
 		opponent_guard = rng.randf_range(0.35, 0.72)
