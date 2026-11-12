@@ -13,6 +13,7 @@ func _run_test() -> void:
 	current_scene = app
 	app.start_match(0)
 	assert(app.player.kind == 0 and app.cpu.kind == 1, "Bomj vs CPU Gopnik")
+	_assert_face_to_face()
 	assert(app.fighting and app.game_active, "Match should start")
 	assert(app.player.energy == 0.0, "Stamina starts empty")
 	app.cpu.position.x = app.player.position.x + 1.4
@@ -32,11 +33,22 @@ func _run_test() -> void:
 	assert(app.player.energy == 35.0, "Second super costs 65")
 	app.start_match(1)
 	assert(app.player.kind == 1 and app.cpu.kind == 0, "Gopnik vs CPU Bomj")
+	_assert_face_to_face()
 	app._end_round(0)
 	assert(app.wins_player == 1 and not app.fighting, "Player gains a round")
 	app._restart_round()
+	_assert_face_to_face()
 	assert(app.fighting and app.player.hp == 100.0, "Second round resets fighters")
 	app._end_round(0)
 	assert(app.player_won() and not app.game_active, "Two wins finish the match")
-	print("SMOKE PASS: both fighters, normal hit, stamina costs, CPU selection, round and match flow")
+	print("SMOKE PASS: both fighters face opponent in 3/4 stance, normal hit, stamina costs, CPU selection, round and match flow")
 	quit(0)
+
+func _assert_face_to_face() -> void:
+	var player_forward: Vector3 = app.player.model.global_transform.basis.z.normalized()
+	var cpu_forward: Vector3 = app.cpu.model.global_transform.basis.z.normalized()
+	var toward_cpu: Vector3 = (app.cpu.global_position - app.player.global_position).normalized()
+	var toward_player: Vector3 = -toward_cpu
+	assert(player_forward.dot(toward_cpu) > 0.85, "Player's face must point toward CPU")
+	assert(cpu_forward.dot(toward_player) > 0.85, "CPU's face must point toward player")
+	assert(player_forward.z > 0.20 and cpu_forward.z > 0.20, "Both characters must retain facial visibility to camera")
