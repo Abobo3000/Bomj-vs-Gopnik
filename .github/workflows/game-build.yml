@@ -6,6 +6,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: godot-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   validate-and-export:
     runs-on: ubuntu-24.04
@@ -53,7 +56,17 @@ jobs:
         run: |
           set -euo pipefail
           echo "ANDROID_HOME=${ANDROID_HOME}" >> "$GITHUB_ENV"
-          sdkmanager --sdk_root="${ANDROID_HOME}" "platform-tools" "build-tools;35.0.1" "platforms;android-35"
+          SDKMGR="$(find "${ANDROID_HOME}" -type f -name sdkmanager -print -quit)"
+          if [ -z "$SDKMGR" ]; then
+            echo "sdkmanager missing under ANDROID_HOME=${ANDROID_HOME}; installing official CLI"
+            mkdir -p "${ANDROID_HOME}/cmdline-tools"
+            curl -fL --retry 3 https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip -o /tmp/sdkcli.zip
+            unzip -q /tmp/sdkcli.zip -d /tmp/sdk-tools
+            mv /tmp/sdk-tools/cmdline-tools "${ANDROID_HOME}/cmdline-tools/latest"
+            SDKMGR="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+          fi
+          yes | "$SDKMGR" --sdk_root="${ANDROID_HOME}" --licenses >/dev/null || true
+          "$SDKMGR" --sdk_root="${ANDROID_HOME}" "platform-tools" "build-tools;35.0.1" "platforms;android-35"
           keytool -genkeypair -v -keystore /tmp/bvg-debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Game Prototype,C=US"
       - name: Configure SDK inside Godot editor
         shell: bash
