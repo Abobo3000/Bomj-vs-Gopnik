@@ -28,13 +28,14 @@ jobs:
         shell: bash
         run: |
           bash tools/fetch_assets.sh
+          python3 tools/generate_textures.py
       - name: Commit bundled character assets into project branch
         if: github.event_name == 'push' && github.ref == 'refs/heads/feat/v1-visual-combat'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/characters/*.glb
+          git add assets/characters/*.glb assets/textures/*.png
           if ! git diff --cached --quiet; then
             git commit -m "assets: vendor CC0 rigged PBR fighters [skip ci]"
             git push origin HEAD:feat/v1-visual-combat
