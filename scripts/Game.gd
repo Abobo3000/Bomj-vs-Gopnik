@@ -40,8 +40,8 @@ func _ready() -> void:
 	camera.near = 0.15
 	camera.far = 105.0
 	add_child(camera)
-	camera.position = Vector3(0, 3.82, 12.2)
-	camera.look_at(Vector3(0, 1.62, -1.2), Vector3.UP)
+	camera.position = Vector3(0, 3.46, 10.25)
+	camera.look_at(Vector3(0, 1.70, -1.2), Vector3.UP)
 	_spawn_fighters(0)
 	ui = HUDScene.new()
 	add_child(ui)
@@ -122,8 +122,8 @@ func _physics_process(delta: float) -> void:
 	camera_tension = move_toward(camera_tension, 0.0, delta * 1.2)
 	var center: float = (player.position.x + cpu.position.x) * 0.5 if is_instance_valid(player) and is_instance_valid(cpu) else 0.0
 	var cam_x := clampf(center * 0.24, -1.0, 1.0)
-	camera.position = Vector3(cam_x + rng.randf_range(-0.08, 0.08) * camera_shake, 3.82 + rng.randf_range(-0.06, 0.06) * camera_shake, 12.2 - camera_tension * 1.1)
-	camera.look_at(Vector3(cam_x, 1.62, -1.2), Vector3.UP)
+	camera.position = Vector3(cam_x + rng.randf_range(-0.08, 0.08) * camera_shake, 3.46 + rng.randf_range(-0.06, 0.06) * camera_shake, 10.25 - camera_tension * 0.9)
+	camera.look_at(Vector3(cam_x, 1.70, -1.2), Vector3.UP)
 	if not game_active:
 		return
 	if hitstop > 0.0:
