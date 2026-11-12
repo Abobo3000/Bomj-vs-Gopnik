@@ -53,8 +53,8 @@ func setup(owner_game: Node3D) -> void:
 		["guard", "БЛОК", Color("#303f52")],
 		["punch", "УДАР", Color("#783c44")],
 		["kick", "НОГА", Color("#824e31")],
-		["special1", "СУПЕР 1", Color("#375968")],
-		["special2", "СУПЕР 2", Color("#625070")]
+		["special1", "🔥 / 🌻", Color("#375968")],
+		["special2", "🐈 / 📱", Color("#625070")]
 	]
 	for entry in controls:
 		var key: String = entry[0]
@@ -205,7 +205,7 @@ func show_menu(mode: String) -> void:
 	for n in menu.get_children():
 		n.queue_free()
 	var background := ColorRect.new()
-	background.color = Color(0.035, 0.044, 0.07, 0.86)
+	background.color = Color(0.035, 0.044, 0.07, 0.68)
 	menu.add_child(background)
 	background.set_meta("menu_background", true)
 	var title := _label(menu, "БОМЖ  ПРОТИВ  ГОПНИКА", 52, Color("#f0deba"))
