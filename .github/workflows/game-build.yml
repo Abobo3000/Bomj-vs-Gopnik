@@ -73,6 +73,30 @@ jobs:
           if grep -E 'SCRIPT ERROR|Parse Error|Invalid call|Assertion failed' build/smoke.log; then
             exit 1
           fi
+      - name: Render live Godot gameplay screenshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v xvfb-run >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq xvfb libgl1-mesa-dri
+          fi
+          timeout 85s xvfb-run -a -s "-screen 0 1280x720x24" godot --rendering-method gl_compatibility --path . --script res://tools/render_preview.gd 2>&1 | tee build/render.log
+          grep -q 'SCREENSHOT_OK' build/render.log
+          test -s build/arena_capture.png
+      - name: Publish gameplay screenshot in repository
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feat/v1-visual-combat'
+        shell: bash
+        run: |
+          mkdir -p docs/screenshots
+          cp build/arena_capture.png docs/screenshots/arena.png
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/screenshots/arena.png
+          if ! git diff --cached --quiet; then
+            git commit -m "art: include actual Godot gameplay screenshot [skip ci]"
+            git push origin HEAD:feat/v1-visual-combat
+          fi
       - name: Build Windows test executable
         run: |
           godot --headless --path . --export-debug "Windows Desktop" build/BomjVsGopnik.exe
@@ -109,11 +133,12 @@ jobs:
       - name: Upload playable test builds
         uses: actions/upload-artifact@v4
         with:
-          name: BomjVsGopnik-first-playable
+          name: BomjVsGopnik-v1-build
           path: |
             build/*.apk
             build/*.exe
             build/*.pck
+            build/arena_capture.png
           if-no-files-found: error
           retention-days: 14
       - name: Upload import log if failed
