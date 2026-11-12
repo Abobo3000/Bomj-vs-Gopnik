@@ -80,7 +80,12 @@ jobs:
       - name: Configure SDK inside Godot editor
         shell: bash
         run: |
-          godot --headless --editor --path . --script res://tools/configure_android.gd
+          set -o pipefail
+          timeout 70s godot --headless --editor --path . --quit-after 240 --script res://tools/configure_android.gd 2>&1 | tee build/configure.log
+          grep -q 'Configuring Android SDK:' build/configure.log
+          if grep -E 'SCRIPT ERROR|Parse Error|Invalid call|Invalid access' build/configure.log; then
+            exit 1
+          fi
       - name: Export ARM64 Android APK
         shell: bash
         run: |
