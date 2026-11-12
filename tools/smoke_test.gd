@@ -17,6 +17,7 @@ func _run_test() -> void:
 	assert(app.player.energy == 0.0, "Stamina starts empty")
 	app.cpu.position.x = app.player.position.x + 1.4
 	var before: float = app.cpu.hp
+	app.player.action = "punch"
 	app._on_strike(app.player, "punch")
 	assert(app.cpu.hp < before, "Punch should deal damage when in reach")
 	assert(app.player.energy == 10.0, "Landing punch charges meter")
