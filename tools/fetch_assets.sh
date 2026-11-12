@@ -27,5 +27,10 @@ with open(p,'rb') as f:
     print('BONES:',','.join(data['nodes'][i].get('name','?') for i in data.get('skins',[{}])[0].get('joints',[])) if data.get('skins') else '(static)')
 PY
 }
-fetch_glb https://grab3d.com/dl/man-rigged/man-rigged.glb assets/characters/bomj.glb
-fetch_glb https://grab3d.com/dl/man-base-character-rigged/man-base-character-rigged.glb assets/characters/gopnik.glb
+# Upgrade initial test assets: a real elderly clothed rig for Bomj and the
+# bearded jacket model for Gopnik (instead of a barefoot T-shirt mannequin).
+if [ -f assets/characters/bomj.glb ] && [ "$(git hash-object assets/characters/bomj.glb)" = "9340d101b78cf48994dbd6c85da37a92a630aea2" ]; then
+  mv -f assets/characters/bomj.glb assets/characters/gopnik.glb
+fi
+fetch_glb https://grab3d.com/dl/elderly-man-rigged/elderly-man-rigged.glb assets/characters/bomj.glb
+fetch_glb https://grab3d.com/dl/man-rigged/man-rigged.glb assets/characters/gopnik.glb
