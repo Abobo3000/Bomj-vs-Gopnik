@@ -25,6 +25,8 @@ with open(p,'rb') as f:
     data=json.loads(f.read(chunklen).decode('utf8'))
     print(f"GLB_VALID {p} {length} bytes skins={len(data.get('skins',[]))} animations={len(data.get('animations',[]))}")
     print('BONES:',','.join(data['nodes'][i].get('name','?') for i in data.get('skins',[{}])[0].get('joints',[])) if data.get('skins') else '(static)')
+    print('MATERIALS:', [(m.get('name','material'),m.get('pbrMetallicRoughness',{}).get('baseColorFactor',[])) for m in data.get('materials',[])][:30])
+    print('MESHES:', [m.get('name','mesh') for m in data.get('meshes',[])][:30])
 PY
 }
 # Upgrade initial test assets: a real elderly clothed rig for Bomj and the
