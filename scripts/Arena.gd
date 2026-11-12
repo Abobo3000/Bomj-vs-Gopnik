@@ -4,6 +4,23 @@ extends Node3D
 var rng := RandomNumberGenerator.new()
 var lamps: Array[OmniLight3D] = []
 var elapsed := 0.0
+var pbr_cache: Dictionary = {}
+
+func pbr_material(kind: String, tint: String) -> StandardMaterial3D:
+	var key := kind + ":" + tint
+	if pbr_cache.has(key):
+		return pbr_cache[key]
+	var mat := material(tint)
+	mat.albedo_color = mat.albedo_color.lerp(Color.WHITE, 0.68)
+	mat.albedo_texture = load("res://assets/textures/" + kind + "_albedo.png") as Texture2D
+	mat.normal_enabled = true
+	mat.normal_texture = load("res://assets/textures/" + kind + "_normal.png") as Texture2D
+	mat.normal_scale = 0.85
+	mat.roughness_texture = load("res://assets/textures/" + kind + "_roughness.png") as Texture2D
+	mat.uv1_triplanar = true
+	mat.uv1_scale = Vector3(0.44, 0.44, 0.44)
+	pbr_cache[key] = mat
+	return mat
 
 func _ready() -> void:
 	rng.seed = 1997
@@ -28,12 +45,12 @@ func material(hex: String, metallic: float = 0.0, roughness: float = 0.86, glow:
 		m.emission_energy_multiplier = 2.0
 	return m
 
-func block(p: Vector3, size: Vector3, hex: String, metal: float = 0.0, rough: float = 0.9, glow: bool = false) -> MeshInstance3D:
+func block(p: Vector3, size: Vector3, hex: String, metal: float = 0.0, rough: float = 0.9, glow: bool = false, texture_kind: String = "") -> MeshInstance3D:
 	var n := MeshInstance3D.new()
 	var mesh := BoxMesh.new()
 	mesh.size = size
 	n.mesh = mesh
-	n.material_override = material(hex, metal, rough, glow)
+	n.material_override = pbr_material(texture_kind, hex) if texture_kind != "" else material(hex, metal, rough, glow)
 	add_child(n)
 	n.position = p
 	n.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF if glow else GeometryInstance3D.SHADOW_CASTING_SETTING_ON
@@ -85,9 +102,9 @@ func _build_world() -> void:
 	night.shadow_enabled = true
 	add_child(night)
 	# Wet oil-stained street, pavement, drainage and gritty curb.
-	block(Vector3(0, -0.18, -1.2), Vector3(60, 0.3, 25), "#1c222e", 0.12, 0.36)
-	block(Vector3(0, -0.08, -5.1), Vector3(60, 0.28, 5.6), "#33323a", 0.06, 0.82)
-	block(Vector3(0, -0.02, -2.22), Vector3(60, 0.19, 0.23), "#5b5960")
+	block(Vector3(0, -0.18, -1.2), Vector3(60, 0.3, 25), "#1c222e", 0.12, 0.36, false, "asphalt")
+	block(Vector3(0, -0.08, -5.1), Vector3(60, 0.28, 5.6), "#33323a", 0.06, 0.82, false, "tile")
+	block(Vector3(0, -0.02, -2.22), Vector3(60, 0.19, 0.23), "#5b5960", 0.0, 0.9, false, "concrete")
 	for k in range(24):
 		var px := rng.randf_range(-13, 13)
 		var pz := rng.randf_range(-4.8, 3.2)
@@ -116,11 +133,14 @@ func _build_world() -> void:
 		var cable := block(Vector3(0, 4.8 + i * 0.16, -8.7), Vector3(24, 0.022, 0.022), "#262831")
 		cable.rotation.z = 0.012 * float(i)
 	label("ГОРОДСКОЙ РАЙОН  •  1997", Vector3(0, 6.8, -12.2), 54, Color("#91909a"), 0.007)
+	label("БЕРЕГИ СЕБЯ", Vector3(8.15, 2.65, -10.5), 35, Color("#bcaaa0"), 0.011)
+	label("ВЫБОРЫ 1996", Vector3(-4.4, 1.8, -8.2), 24, Color("#b3afa3"), 0.009)
+	_add_rain()
 
 func _apartment(x: float, z: float, floors: int, variant: int) -> void:
 	var h := float(floors) * 1.18
 	var base := "#77737a" if variant % 3 == 0 else ("#797f89" if variant % 3 == 1 else "#726f6d")
-	block(Vector3(x, h * 0.5 - 0.4, z), Vector3(4.75, h, 2.5), base)
+	block(Vector3(x, h * 0.5 - 0.4, z), Vector3(4.75, h, 2.5), base, 0, 0.93, false, "concrete")
 	block(Vector3(x, h - 0.30, z), Vector3(5.0, 0.23, 2.75), "#383941")
 	# Every floor has narrow panel joints and 3 windows; deterministic light pattern.
 	for f in range(floors):
@@ -141,8 +161,8 @@ func _apartment(x: float, z: float, floors: int, variant: int) -> void:
 	block(Vector3(x + 0.8, h + 1.07, z), Vector3(0.8, 0.025, 0.025), "#2b3038")
 
 func _kiosk(x: float, z: float) -> void:
-	block(Vector3(x, 1.24, z), Vector3(3.35, 2.5, 2.4), "#4b494b")
-	block(Vector3(x, 2.55, z), Vector3(3.8, 0.22, 2.9), "#4e241f")
+	block(Vector3(x, 1.24, z), Vector3(3.35, 2.5, 2.4), "#4b494b", 0, 0.8, false, "rust")
+	block(Vector3(x, 2.55, z), Vector3(3.8, 0.22, 2.9), "#4e241f", 0, 0.8, false, "rust")
 	block(Vector3(x, 1.50, z + 1.23), Vector3(2.2, 1.12, 0.13), "#282f41")
 	block(Vector3(x, 1.54, z + 1.31), Vector3(2.09, 0.98, 0.02), "#5d7185", 0.3, 0.18)
 	block(Vector3(x, 2.76, z + 1.31), Vector3(3.45, 0.56, 0.13), "#a12732", 0.05, 0.5, true)
@@ -182,3 +202,30 @@ func _trash(x: float, z: float) -> void:
 	for i in range(3):
 		var y := 0.24 + i * 0.19
 		block(Vector3(x, y, z + 0.42), Vector3(0.45, 0.027, 0.027), "#34393c")
+
+func _add_rain() -> void:
+	# Night rain on 90s asphalt: thin trails, cheap particle budget for S23.
+	var weather := GPUParticles3D.new()
+	weather.name = "Drizzle"
+	weather.amount = 150
+	weather.lifetime = 1.75
+	weather.explosiveness = 0.0
+	weather.preprocess = 1.7
+	weather.position = Vector3(0.0, 7.7, 1.2)
+	weather.visibility_aabb = AABB(Vector3(-13.0,-12.0,-8.0), Vector3(26.0,14.0,16.0))
+	var process := ParticleProcessMaterial.new()
+	process.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	process.emission_box_extents = Vector3(11.0, 0.15, 6.0)
+	process.gravity = Vector3(0.0,-16.0,0.0)
+	process.initial_velocity_min = 0.6
+	process.initial_velocity_max = 1.0
+	weather.process_material = process
+	var drop := SphereMesh.new()
+	drop.radius = 0.011
+	drop.height = 0.15
+	drop.radial_segments = 5
+	drop.rings = 2
+	drop.material = material("#91a5c4",0,0.18)
+	weather.draw_pass_1 = drop
+	add_child(weather)
+	weather.emitting = true
