@@ -8,5 +8,5 @@ func _initialize() -> void:
 	print("Configuring Android SDK: ", sdk)
 	editor.set_setting("export/android/android_sdk_path", sdk)
 	editor.set_setting("export/android/java_sdk_path", java)
-	editor.save()
+	# EditorSettings persists changes automatically; no public save() method.
 	quit()
