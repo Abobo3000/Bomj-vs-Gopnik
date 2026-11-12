@@ -12,6 +12,9 @@ SIZE = 512
 SEED = 1997
 OUT = "assets/textures"
 os.makedirs(OUT, exist_ok=True)
+if all(os.path.isfile(os.path.join(OUT, name+"_normal.png")) for name in ["concrete","asphalt","tile","rust","leather"]):
+    print("TEXTURES_ALREADY_PRESENT")
+    raise SystemExit(0)
 
 def chunk(name, data):
     return struct.pack(">I", len(data)) + name + data + struct.pack(">I", zlib.crc32(name + data) & 0xffffffff)
