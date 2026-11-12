@@ -52,7 +52,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          godot --headless --path . --script res://tools/smoke_test.gd 2>&1 | tee build/smoke.log
+          timeout 75s godot --headless --path . --quit-after 240 --script res://tools/smoke_test.gd 2>&1 | tee build/smoke.log
           grep -q 'SMOKE PASS:' build/smoke.log
           if grep -E 'SCRIPT ERROR|Parse Error|Invalid call|Assertion failed' build/smoke.log; then
             exit 1
