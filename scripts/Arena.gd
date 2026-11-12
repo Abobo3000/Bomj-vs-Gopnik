@@ -11,14 +11,14 @@ func pbr_material(kind: String, tint: String) -> StandardMaterial3D:
 	if pbr_cache.has(key):
 		return pbr_cache[key]
 	var mat := material(tint)
-	mat.albedo_color = mat.albedo_color.lerp(Color.WHITE, 0.68)
+	mat.albedo_color = mat.albedo_color.lerp(Color.WHITE, 0.84)
 	mat.albedo_texture = load("res://assets/textures/" + kind + "_albedo.png") as Texture2D
 	mat.normal_enabled = true
 	mat.normal_texture = load("res://assets/textures/" + kind + "_normal.png") as Texture2D
-	mat.normal_scale = 0.85
+	mat.normal_scale = 0.30
 	mat.roughness_texture = load("res://assets/textures/" + kind + "_roughness.png") as Texture2D
 	mat.uv1_triplanar = true
-	mat.uv1_scale = Vector3(0.44, 0.44, 0.44)
+	mat.uv1_scale = Vector3(0.24, 0.24, 0.24)
 	pbr_cache[key] = mat
 	return mat
 
@@ -30,7 +30,7 @@ func _process(delta: float) -> void:
 	elapsed += delta
 	# Very subtle sodium-vapor lamp flicker, no post-processing required.
 	if lamps.size() > 0:
-		lamps[0].light_energy = 1.45 + sin(elapsed * 5.0) * 0.07
+		lamps[0].light_energy = 2.2 + sin(elapsed * 5.0) * 0.07
 		if sin(elapsed * 18.7) > 0.985:
 			lamps[0].light_energy *= 0.65
 
@@ -42,7 +42,7 @@ func material(hex: String, metallic: float = 0.0, roughness: float = 0.86, glow:
 	if glow:
 		m.emission_enabled = true
 		m.emission = Color(hex)
-		m.emission_energy_multiplier = 2.0
+		m.emission_energy_multiplier = 0.8
 	return m
 
 func block(p: Vector3, size: Vector3, hex: String, metal: float = 0.0, rough: float = 0.9, glow: bool = false, texture_kind: String = "") -> MeshInstance3D:
@@ -90,7 +90,7 @@ func _build_world() -> void:
 	env.background_color = Color("#151927")
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color("#62708b")
-	env.ambient_light_energy = 0.72
+	env.ambient_light_energy = 0.61
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_BG
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	world.environment = env
@@ -98,8 +98,9 @@ func _build_world() -> void:
 	var night := DirectionalLight3D.new()
 	night.rotation_degrees = Vector3(-48, -28, 5)
 	night.light_color = Color("#8fa9d5")
-	night.light_energy = 0.72
+	night.light_energy = 0.53
 	night.shadow_enabled = true
+	night.directional_shadow_max_distance = 50.0
 	add_child(night)
 	# Wet oil-stained street, pavement, drainage and gritty curb.
 	block(Vector3(0, -0.18, -1.2), Vector3(60, 0.3, 25), "#1c222e", 0.12, 0.36, false, "asphalt")
@@ -119,7 +120,7 @@ func _build_world() -> void:
 	for i in range(8):
 		var x := (float(i) - 3.5) * 4.65
 		var z := -15.1 - float(i % 3) * 1.6
-		var levels := 6 + (i % 4)
+		var levels := 5 + (i % 4)
 		_apartment(x, z, levels, i)
 	# Front block, fences and shop are placed asymmetrically.
 	_kiosk(-8.1, -7.0)
@@ -148,8 +149,8 @@ func _apartment(x: float, z: float, floors: int, variant: int) -> void:
 		block(Vector3(x, y + 0.52, z + 1.26), Vector3(4.76, 0.045, 0.04), "#57565e")
 		for w in range(3):
 			var wx := x + float(w - 1) * 1.49
-			var lit := rng.randf() < 0.28
-			var glass := "#e6b575" if lit else "#252b3b"
+			var lit := rng.randf() < 0.14
+			var glass := "#967148" if lit else "#1c2532"
 			block(Vector3(wx, y + 0.17, z + 1.294), Vector3(0.88, 0.72, 0.06), glass, 0.0, 0.55, lit)
 			block(Vector3(wx, y + 0.17, z + 1.344), Vector3(0.034, 0.73, 0.055), "#d1c6bb")
 			block(Vector3(wx, y - 0.19, z + 1.36), Vector3(0.96, 0.075, 0.24), "#585862")
@@ -177,7 +178,7 @@ func _lamp(x: float, z: float) -> void:
 	var light := OmniLight3D.new()
 	light.position = Vector3(x + 0.65, 5.34, z + 0.10)
 	light.light_color = Color("#ffd18e")
-	light.light_energy = 1.45
+	light.light_energy = 2.25
 	light.omni_range = 11.0
 	light.shadow_enabled = false
 	add_child(light)
