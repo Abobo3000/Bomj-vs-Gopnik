@@ -1,4 +1,5 @@
 extends Node3D
+const RiggedVisual = preload("res://scripts/RiggedVisual.gd")
 ## Two fully procedural, readable fighting silhouettes. All geometry is authored here
 ## and can later be replaced by rigged CC0 GLB fighters without changing combat logic.
 signal move_strike(who, move_name)
@@ -28,12 +29,21 @@ var left_arm: Node3D
 var right_arm: Node3D
 var left_leg: Node3D
 var right_leg: Node3D
+var rigged_visual: Node3D
 
 func setup(new_kind: int, direction: int) -> void:
 	kind = new_kind
 	facing = direction
 	name = "Bomj" if kind == 0 else "Gopnik"
 	_build_model()
+	# Replace primitive design placeholders with imported PBR skinned characters.
+	rigged_visual = RiggedVisual.new()
+	model.add_child(rigged_visual)
+	rigged_visual.setup(kind)
+	if rigged_visual.has_3d_asset():
+		chest.visible = false
+		left_leg.visible = false
+		right_leg.visible = false
 	# Meshes are authored with their faces along local +Z. The fighting lane is world X.
 	# A 70-degree three-quarter pose looks toward the enemy yet shows facial details
 	# to the camera at +Z. Direction -1 mirrors it for the CPU/opposite side.
@@ -55,6 +65,8 @@ func reset_fighter() -> void:
 	if model != null:
 		model.rotation.z = 0.0
 		model.position.y = 0.0
+	if is_instance_valid(rigged_visual):
+		rigged_visual.reset_pose()
 
 func tick(delta: float) -> void:
 	animation_clock += delta
@@ -191,6 +203,8 @@ func _pose() -> void:
 		head.rotation.x = 0.0
 	if not defeated:
 		model.rotation.z = idle * 0.013
+	if is_instance_valid(rigged_visual):
+		rigged_visual.animate_combat(movement, action, action_time / maxf(0.01, action_length), is_guarding, action == "hurt", get_physics_process_delta_time())
 
 func _mat(c: Color, metallic: float = 0.0, roughness: float = 0.85, glowing: bool = false) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
