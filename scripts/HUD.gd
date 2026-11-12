@@ -36,7 +36,9 @@ func setup(owner_game: Node3D) -> void:
 		hp_tracks.append(hp)
 		var energy := _rect(match_ui, Color("#131924"))
 		energy_tracks.append(energy)
-	left_hp = _rect(match_ui, Color("#dd5148"))
+	var time_back := _rect(match_ui, Color("#1c171c"))
+	time_back.set_meta("time_back", true)
+	left_hp = _rect(match_ui, Color("#db634b"))
 	right_hp = _rect(match_ui, Color("#e0b24f"))
 	left_energy = _rect(match_ui, Color("#74dee1"))
 	right_energy = _rect(match_ui, Color("#74dee1"))
@@ -51,8 +53,8 @@ func setup(owner_game: Node3D) -> void:
 		["guard", "БЛОК", Color("#303f52")],
 		["punch", "УДАР", Color("#783c44")],
 		["kick", "НОГА", Color("#824e31")],
-		["special1", "СУПЕР 1", Color("#375968")],
-		["special2", "СУПЕР 2", Color("#625070")]
+		["special1", "🔥 / 🌻", Color("#375968")],
+		["special2", "🐈 / 📱", Color("#625070")]
 	]
 	for entry in controls:
 		var key: String = entry[0]
@@ -98,10 +100,14 @@ func _button(parent: Control, txt: String, col: Color, font_size: int) -> Button
 	b.add_theme_font_size_override("font_size", font_size)
 	b.add_theme_color_override("font_color", Color("#fdf4e9"))
 	var normal := StyleBoxFlat.new()
-	normal.bg_color = col
-	normal.border_color = Color("#b1a9a1")
+	normal.bg_color = col.darkened(0.11)
+	normal.border_color = col.lightened(0.39)
 	normal.set_border_width_all(2)
 	normal.set_corner_radius_all(9)
+	normal.shadow_color = Color(0, 0, 0, 0.45)
+	normal.shadow_size = 4
+	normal.content_margin_left = 6.0
+	normal.content_margin_right = 6.0
 	var down := normal.duplicate() as StyleBoxFlat
 	down.bg_color = col.lightened(0.25)
 	b.add_theme_stylebox_override("normal", normal)
@@ -138,6 +144,10 @@ func _layout() -> void:
 	name_right.position = Vector2(w - margin - bar_width, h * 0.025)
 	for n in [name_left, name_right]:
 		n.size = Vector2(bar_width, h * 0.066)
+	for n in match_ui.get_children():
+		if n.has_meta("time_back"):
+			n.position = Vector2(w * 0.443, h * 0.025)
+			n.size = Vector2(w * 0.114, h * 0.13)
 	clock_label.position = Vector2(w * 0.448, h * 0.039)
 	clock_label.size = Vector2(w * 0.104, h * 0.077)
 	round_label.position = Vector2(w * 0.423, h * 0.133)
@@ -195,12 +205,12 @@ func show_menu(mode: String) -> void:
 	for n in menu.get_children():
 		n.queue_free()
 	var background := ColorRect.new()
-	background.color = Color(0.035, 0.044, 0.07, 0.86)
+	background.color = Color(0.035, 0.044, 0.07, 0.68)
 	menu.add_child(background)
 	background.set_meta("menu_background", true)
 	var title := _label(menu, "БОМЖ  ПРОТИВ  ГОПНИКА", 52, Color("#f0deba"))
 	title.set_meta("menu_title", true)
-	var subtitle := _label(menu, "ПРОВИНЦИЯ • 1997  |  ОДИН ПРОТИВ КОМПЬЮТЕРА", 23, Color("#c8a077"))
+	var subtitle := _label(menu, "РАЙОН 1997 • ПОДЪЕЗДНАЯ БИТВА • ТОЛЬКО ПРОТИВ ИИ", 23, Color("#c8a077"))
 	subtitle.set_meta("menu_subtitle", true)
 	var info := _label(menu, "Выбери бойца", 30, Color("#eae9e8"))
 	info.set_meta("menu_info", true)
@@ -214,7 +224,16 @@ func show_menu(mode: String) -> void:
 	var gopnik := _button(menu, "ГОПНИК\n\nКожанка • спортивки • дерзкий взгляд\n\n40 энергии: СЕМЕЧКИ В ГЛАЗ\n65 энергии: ТЕЛЕФОН-КИРПИЧ", Color("#393b4a"), 22)
 	gopnik.set_meta("choice", 1)
 	gopnik.pressed.connect(func(): game.start_match(1))
-	var help := _label(menu, "Управление: A / D — ходить, J — удар, K — нога, L — блок, U / I — суперудары", 18, Color("#aab4be"))
+	var difficulty := _label(menu, "СЛОЖНОСТЬ ИИ", 17, Color("#ddd0be"))
+	difficulty.set_meta("difficulty_title", true)
+	var names := ["НОВИЧОК", "ДВОРОВЫЙ", "МАТЁРЫЙ"]
+	for i in range(3):
+		var option := _button(menu, names[i], Color("#4b4b55") if i != game.ai_level else Color("#a36a3f"), 17)
+		option.set_meta("difficulty", i)
+		option.pressed.connect(func():
+			game.choose_difficulty(i)
+			show_menu(mode))
+	var help := _label(menu, "A/D — движение · J — кулак · K — нога · L — блок · U/I — суперудары · удары подряд = комбо", 17, Color("#aab4be"))
 	help.set_meta("menu_help", true)
 	_layout_menu()
 
@@ -240,8 +259,15 @@ func _layout_menu() -> void:
 			var i: int = n.get_meta("choice")
 			n.position = Vector2(w * (0.12 if i == 0 else 0.515), h * 0.39)
 			n.size = Vector2(w * 0.365, h * 0.40)
+		elif n.has_meta("difficulty_title"):
+			n.position = Vector2(w * 0.08, h * 0.805)
+			n.size = Vector2(w * 0.20, h * 0.055)
+		elif n.has_meta("difficulty"):
+			var ix: int = n.get_meta("difficulty")
+			n.position = Vector2(w * (0.31 + float(ix) * 0.195), h * 0.80)
+			n.size = Vector2(w * 0.18, h * 0.060)
 		elif n.has_meta("menu_help"):
-			n.position = Vector2(w * 0.07, h * 0.84)
+			n.position = Vector2(w * 0.07, h * 0.895)
 			n.size = Vector2(w * 0.86, h * 0.075)
 
 func hide_menu() -> void:
