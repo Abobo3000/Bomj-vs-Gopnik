@@ -34,6 +34,10 @@ func setup(new_kind: int, direction: int) -> void:
 	facing = direction
 	name = "Bomj" if kind == 0 else "Gopnik"
 	_build_model()
+	# Meshes are authored with their faces along local +Z. The fighting lane is world X.
+	# A 70-degree three-quarter pose looks toward the enemy yet shows facial details
+	# to the camera at +Z. Direction -1 mirrors it for the CPU/opposite side.
+	model.rotation.y = deg_to_rad(70.0) * float(facing)
 
 func reset_fighter() -> void:
 	hp = MAX_HP
@@ -47,6 +51,10 @@ func reset_fighter() -> void:
 	movement = 0.0
 	position.y = 0.0
 	rotation.z = 0.0
+	# Restore the actual animated model, not only the empty fighter root.
+	if model != null:
+		model.rotation.z = 0.0
+		model.position.y = 0.0
 
 func tick(delta: float) -> void:
 	animation_clock += delta
@@ -139,39 +147,48 @@ func _pose() -> void:
 	model.position.y = idle * 0.025
 	model.rotation.z = idle * 0.013
 	chest.rotation.z = 0.0
+	chest.rotation.x = 0.0
 	head.rotation.z = idle * 0.018
-	left_arm.rotation.z = -0.16 + swing * 0.32
-	right_arm.rotation.z = 0.16 - swing * 0.32
-	left_leg.rotation.z = -swing * 0.28
-	right_leg.rotation.z = swing * 0.28
+	# The chest faces local +Z, so strikes must swing in the YZ plane.
+	# Rotating around Z (as in v0.1) caused arms and legs to swing sideways.
+	left_arm.rotation = Vector3(-swing * 0.27, 0.0, -0.17)
+	right_arm.rotation = Vector3(swing * 0.27, 0.0, 0.17)
+	left_leg.rotation = Vector3(swing * 0.25, 0.0, 0.0)
+	right_leg.rotation = Vector3(-swing * 0.25, 0.0, 0.0)
+	# In three-quarter view the camera-near limb is different on each side.
+	var front_arm: Node3D = left_arm if facing == 1 else right_arm
+	var front_leg: Node3D = left_leg if facing == 1 else right_leg
 	if is_guarding:
-		left_arm.rotation.z = 1.9
-		right_arm.rotation.z = -1.9
-		chest.rotation.z = -0.07 * facing
+		left_arm.rotation.x = -2.1
+		right_arm.rotation.x = -2.1
+		left_arm.rotation.z = -0.38
+		right_arm.rotation.z = 0.38
+		chest.rotation.x = -0.09
 	if action != "":
 		var progress := clampf(action_time / maxf(0.01, action_length), 0.0, 1.0)
 		var impulse := sin(progress * PI)
-		var front_arm: Node3D = right_arm if facing == 1 else left_arm
-		var front_leg: Node3D = right_leg if facing == 1 else left_leg
 		match action:
 			"punch":
-				front_arm.rotation.z = -facing * (0.2 + 1.55 * impulse)
-				chest.rotation.z = -facing * 0.13 * impulse
+				front_arm.rotation.x = -(0.38 + 1.57 * impulse)
+				chest.rotation.x = -0.15 * impulse
+				head.rotation.z = 0.05 * impulse
 			"kick":
-				front_leg.rotation.z = -facing * 1.25 * impulse
-				chest.rotation.z = facing * 0.13 * impulse
+				front_leg.rotation.x = -1.26 * impulse
+				chest.rotation.x = 0.19 * impulse
 			"special1":
-				front_arm.rotation.z = -facing * (0.9 + 0.7 * impulse)
-				head.rotation.z = -facing * 0.4 * impulse
+				front_arm.rotation.x = -(0.65 + 1.20 * impulse)
+				head.rotation.x = -0.30 * impulse
 			"special2":
-				front_arm.rotation.z = -facing * (0.5 + 1.7 * impulse)
-				chest.rotation.z = -facing * 0.2 * impulse
+				front_arm.rotation.x = -(0.55 + 1.55 * impulse)
+				chest.rotation.x = -0.16 * impulse
 			"hurt":
-				chest.rotation.z = -facing * 0.23 * (1.0 - progress)
-				head.rotation.z = -facing * 0.2 * (1.0 - progress)
+				chest.rotation.x = 0.24 * (1.0 - progress)
+				head.rotation.x = 0.15 * (1.0 - progress)
 			"knockout":
 				model.rotation.z = -facing * 1.30 * minf(action_time / 0.6, 1.0)
 				model.position.y = -0.42 * minf(action_time / 0.6, 1.0)
+	if action != "special1" and action != "hurt":
+		head.rotation.x = 0.0
 	if not defeated:
 		model.rotation.z = idle * 0.013
 
