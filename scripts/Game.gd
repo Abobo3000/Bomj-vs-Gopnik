@@ -21,6 +21,9 @@ var opponent_decision := 0.0
 var opponent_guard := 0.0
 var hit_flash := 0.0
 var camera_shake := 0.0
+var hitstop := 0.0
+var camera_tension := 0.0
+var ai_level := 1
 var moving_fx: Array = []
 var impact_fx: Array = []
 var rng := RandomNumberGenerator.new()
@@ -70,6 +73,8 @@ func start_match(choice: int) -> void:
 	wins_cpu = 0
 	round_seconds = 90.0
 	round_break = 0.0
+	hitstop = 0.0
+	camera_tension = 0.0
 	opponent_decision = 0.8
 	opponent_guard = 0.0
 	notice_seconds = 1.0
@@ -79,6 +84,9 @@ func start_match(choice: int) -> void:
 	ui.set_match_visible(true)
 	ui.set_note("БОЙ!")
 	_update_hud()
+
+func choose_difficulty(level: int) -> void:
+	ai_level = clampi(level, 0, 2)
 
 func player_won() -> bool:
 	return wins_player >= 2
@@ -111,8 +119,16 @@ func _physics_process(delta: float) -> void:
 	camera_shake = move_toward(camera_shake, 0.0, delta * 5.0)
 	if ui != null:
 		ui.set_flash(hit_flash)
-	camera.position = Vector3(rng.randf_range(-0.08, 0.08) * camera_shake, 3.82 + rng.randf_range(-0.06, 0.06) * camera_shake, 12.2)
+	camera_tension = move_toward(camera_tension, 0.0, delta * 1.2)
+	var center := (player.position.x + cpu.position.x) * 0.5 if is_instance_valid(player) and is_instance_valid(cpu) else 0.0
+	var cam_x := clampf(center * 0.24, -1.0, 1.0)
+	camera.position = Vector3(cam_x + rng.randf_range(-0.08, 0.08) * camera_shake, 3.82 + rng.randf_range(-0.06, 0.06) * camera_shake, 12.2 - camera_tension * 1.1)
+	camera.look_at(Vector3(cam_x, 1.62, -1.2), Vector3.UP)
 	if not game_active:
+		return
+	if hitstop > 0.0:
+		hitstop = maxf(0.0, hitstop - delta)
+		_update_hud()
 		return
 	player.tick(delta)
 	cpu.tick(delta)
@@ -149,25 +165,31 @@ func _tick_cpu(delta: float) -> void:
 	if cpu.defeated:
 		return
 	var distance := absf(cpu.position.x - player.position.x)
+	var ideal_distance := 1.82 if ai_level > 0 else 2.12
 	if opponent_guard <= 0.0 and cpu.action == "":
-		if distance > 1.72:
+		if distance > ideal_distance + 0.1:
 			cpu.walk(signf(player.position.x - cpu.position.x), delta)
-		elif distance < 1.10 and rng.randf() < 0.09:
+		elif distance < 1.15 and rng.randf() < 0.10 + float(ai_level) * 0.03:
 			cpu.walk(-signf(player.position.x - cpu.position.x), delta)
 	opponent_decision -= delta
-	if opponent_decision > 0.0 or cpu.action != "":
+	if opponent_decision > 0.0:
 		return
-	opponent_decision = rng.randf_range(0.49, 0.88)
-	if player.action != "" and distance < 2.25 and rng.randf() < 0.33:
-		opponent_guard = rng.randf_range(0.24, 0.60)
+	var pace := 0.86 - float(ai_level) * 0.22
+	opponent_decision = rng.randf_range(pace * 0.70, pace * 1.30)
+	if cpu.action != "":
+		return
+	var sees_attack := player.action in ["punch", "kick", "special1", "special2"]
+	var defend_chance: float = [0.12, 0.31, 0.48][ai_level]
+	if sees_attack and distance < 2.35 and rng.randf() < defend_chance:
+		opponent_guard = rng.randf_range(0.35, 0.72)
 		cpu.set_guard(true)
 		return
-	if cpu.energy >= 65.0 and rng.randf() < 0.32 and distance < 5.6:
+	if cpu.energy >= 65.0 and rng.randf() < (0.18 + ai_level * 0.13) and distance < 5.7:
 		cpu.try_action("special2")
-	elif cpu.energy >= 40.0 and rng.randf() < 0.38 and distance < 4.0:
+	elif cpu.energy >= 40.0 and rng.randf() < (0.24 + ai_level * 0.09) and distance < 3.9:
 		cpu.try_action("special1")
-	elif distance <= 2.1:
-		cpu.try_action("kick" if rng.randf() < 0.35 else "punch")
+	elif distance < 2.22:
+		cpu.try_action("kick" if rng.randf() < (0.30 + ai_level * 0.10) else "punch")
 	else:
 		opponent_decision = 0.2
 
@@ -184,9 +206,9 @@ func _on_strike(who, move_name: String) -> void:
 	var target = cpu if who == player else player
 	match move_name:
 		"punch":
-			_melee(who, target, 1.85, 9.0, 2.25)
+			_melee(who, target, 1.85, 9.0 + float(who.combo_count) * 2.0, 2.25)
 		"kick":
-			_melee(who, target, 2.25, 15.0, 3.6)
+			_melee(who, target, 2.25, 15.0 + float(who.combo_count) * 2.5, 3.6)
 		"special1":
 			if who.kind == 0:
 				# Fanfurik: a stylized theatrical fire-breath, not a real technique.
@@ -210,10 +232,17 @@ func _melee(attacker, target, distance: float, damage: float, knock: float) -> v
 	var dealt: float = target.take_hit(damage, attacker.facing, knock)
 	if dealt <= 0.0:
 		return
-	if attacker.action == "punch" or attacker.action == "kick":
+	if attacker.action in ["punch", "kick"]:
 		attacker.gain_energy(10.0)
+		attacker.register_combo_hit()
+		hitstop = 0.068
 	else:
 		attacker.gain_energy(3.0)
+		hitstop = 0.105
+	camera_tension = 0.65 if attacker.action in ["punch", "kick"] else 1.0
+	if attacker.combo_count >= 2 and attacker.action in ["punch", "kick"]:
+		ui.set_note("%d УДАРА ПОДРЯД!" % attacker.combo_count)
+		notice_seconds = 0.9
 	_hit_feedback(target.position + Vector3(0, 1.65, 0))
 	_play_sound("hit")
 
