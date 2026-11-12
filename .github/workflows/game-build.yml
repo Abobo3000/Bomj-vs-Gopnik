@@ -5,7 +5,7 @@ on:
   pull_request:
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: godot-${{ github.ref }}
   cancel-in-progress: true
@@ -24,6 +24,21 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - name: Download validated CC0 high-detail 3D characters
+        shell: bash
+        run: |
+          bash tools/fetch_assets.sh
+      - name: Commit bundled character assets into project branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feat/v1-visual-combat'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/characters/*.glb
+          if ! git diff --cached --quiet; then
+            git commit -m "assets: vendor CC0 rigged PBR fighters [skip ci]"
+            git push origin HEAD:feat/v1-visual-combat
+          fi
       - name: Download official Godot editor and export templates
         shell: bash
         run: |
