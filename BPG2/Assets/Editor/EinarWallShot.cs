@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -93,7 +93,10 @@ public static class EinarWallShot
         return shards;
     }
 
-    public static void Render()
+    public static void Render() => RenderShot(false);
+    public static void RenderPlayer() => RenderShot(true);
+
+    static void RenderShot(bool playerView)
     {
         EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
         Random.InitState(441);
@@ -150,10 +153,12 @@ public static class EinarWallShot
         var cam=new GameObject("Shot camera").AddComponent<Camera>();
         cam.aspect=9f/16; cam.fieldOfView=38; cam.clearFlags=CameraClearFlags.SolidColor;
         cam.backgroundColor=new Color(.19f,.24f,.30f);
-        const int w=720,h=1280;
+        int w=playerView?1280:720,h=playerView?720:1280;
+        cam.aspect=(float)w/h;
+        if(playerView) cam.fieldOfView=51;
         var rt=new RenderTexture(w,h,24); rt.Create();
         var image=new Texture2D(w,h,TextureFormat.RGB24,false);
-        string output=Path.Combine(Path.GetTempPath(),"einar-wall-unity-frames");
+        string output=Path.Combine(Path.GetTempPath(),playerView?"einar-wall-player-frames":"einar-wall-unity-frames");
         Directory.CreateDirectory(output);
         for(int frame=0;frame<150;frame++)
         {
@@ -179,7 +184,10 @@ public static class EinarWallShot
                 pos+=new Vector3(sh.velocity.x,0,sh.velocity.z)*(.21f*(1-Mathf.Exp(-4*slide)));
                 sh.body.SetPositionAndRotation(pos,Quaternion.Euler(sh.spin*(flight+.18f*(1-Mathf.Exp(-4*slide)))));
             }
-            if(t<1.18f) {
+            if(playerView) {
+                cam.transform.position=focus+new Vector3(.53f,1.72f,-2.42f);
+                cam.transform.LookAt(focus+new Vector3(.35f,1.12f,1.1f));
+            } else if(t<1.18f) {
                 cam.transform.position=focus+new Vector3(-2.45f,1.04f,1.35f);
                 cam.transform.LookAt(focus+new Vector3(0,1.02f,.25f));
             } else {
