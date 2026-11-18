@@ -1,0 +1,64 @@
+{
+  "id": "einar_wall_breach_player",
+  "version": 1,
+  "status": "user_accepted",
+  "type": "unity_video",
+  "character": "Einar native rig",
+  "title_ru": "Пролом стены с камеры игрока",
+  "description_ru": "Эйнар с разбега проходит через бетонную стену. Камера за правым плечом следует за ним через пролом.",
+  "tags_ru": [
+    "бег",
+    "стена",
+    "пролом",
+    "камера игрока",
+    "обломки"
+  ],
+  "situations_ru": [
+    "разрушение препятствия на бегу"
+  ],
+  "source": "Unity BPG2; 089b553; EinarWallShot.RenderPlayer; AltBuild",
+  "fps": 30,
+  "frames": 150,
+  "accepted": {
+    "date": "2026-11-18",
+    "statement": "отлично! сохрани такой вариант."
+  },
+  "limitations_ru": "Для повторного рендера нужны общий Unity-проект BPG2, материалы Эйнара и AltBuild. Версия принята до добавления падения.",
+  "files": [
+    {
+      "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v1/preview.mp4",
+      "bytes": 2448624,
+      "sha256": "c49a879f204f6a2ef019fcfb2e2e1860eb9d36afd86ee8fe653ed678719fa8f8"
+    },
+    {
+      "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v1/EinarWallShot.cs",
+      "bytes": 10959,
+      "sha256": "eb87126bae6b7983162fa79498c0af447ab65957d5abc66cc801054ea5a1b468"
+    },
+    {
+      "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v1/foley.wav",
+      "bytes": 882044,
+      "sha256": "d5172761903abd13a8c4abc5cd77a591f059fec9bd5ffa1c7a64d5b41ed9b9ed"
+    },
+    {
+      "path": "assets/animation-library/accepted-generations/einar_run_altbuild/v1/Motion.bytes",
+      "bytes": 10934408,
+      "sha256": "42cdbda17701ffbf4b27b057610a703017b9c4a50193e68c8f6d2807f1d2ba7e"
+    },
+    {
+      "path": "assets/animation-library/accepted-generations/einar_run_altbuild/v1/Camera.json",
+      "bytes": 15300,
+      "sha256": "d694ab466d8b14065f9b0fe955de57fd7d907b759eec0b281493a1783c3745af"
+    },
+    {
+      "path": "BPG2/Assets/EinarFull/PlayablePrefab/Einar.prefab",
+      "bytes": 1655160,
+      "sha256": "8bdd225cd9992632bfedc671281f698fce17e4123af59b10f8deac1d7fada563"
+    },
+    {
+      "path": "BPG2/Assets/EinarFull/PlayablePrefab/EinarMeshes.asset",
+      "bytes": 1288622389,
+      "sha256": "4a1fb3115015905e4ad6786569d483bd30ae3bbb0a30aace4ac9b7fffaa61109"
+    }
+  ]
+}

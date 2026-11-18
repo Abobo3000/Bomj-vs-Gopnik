@@ -1,0 +1,310 @@
+{
+  "version": 1,
+  "records": [
+    {
+      "id": "einar_run_altbuild",
+      "version": 1,
+      "status": "user_accepted",
+      "type": "animation",
+      "character": "Einar native rig",
+      "title_ru": "Энергичный бег с разгоном",
+      "description_ru": "Энергичный бег вперёд с размашистым шагом и заметным отталкиванием.",
+      "tags_ru": [
+        "бег",
+        "набор скорости",
+        "преследование",
+        "энергичный",
+        "по прямой"
+      ],
+      "situations_ru": [
+        "погоня",
+        "преследование",
+        "быстрое перемещение по прямой"
+      ],
+      "source": "MotionGPT3: Take4_1, seed 9109",
+      "fps": 30,
+      "frames": 240,
+      "files": [
+        {
+          "path": "assets/animation-library/accepted-generations/einar_run_altbuild/v1/Motion.anim",
+          "sha256": "8cc1fae5479fa39e355ff1a905918fe954e39f86a19ace4c953defa471107fab",
+          "bytes": 265879202
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_run_altbuild/v1/Motion.bytes",
+          "sha256": "42cdbda17701ffbf4b27b057610a703017b9c4a50193e68c8f6d2807f1d2ba7e",
+          "bytes": 10934408
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_run_altbuild/v1/Camera.json",
+          "sha256": "d694ab466d8b14065f9b0fe955de57fd7d907b759eec0b281493a1783c3745af",
+          "bytes": 15300
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_run_altbuild/v1/Einar-AltBuild.mp4",
+          "sha256": "1728f683ffae7c55a40342b1d9ce8328d165556c6fb701ab87756903e5e29b74",
+          "bytes": 13910257
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_run_altbuild/v1/AltBuild.blend",
+          "sha256": "59a55588d86fc9ed02ac3e2ba67e2dab2d7eba471705be1e9727c3dd16b1ee37",
+          "bytes": 91483724
+        }
+      ],
+      "limitations_ru": [
+        "Возможно остаточное скольжение",
+        "Олимпийская техника не подтверждена"
+      ],
+      "accepted": {
+        "date": "2026-11-17",
+        "statement": "первый бег убрать. остальные оставить и добавить в наш каталог бегов с описанием.",
+        "clarified": "Последний 24-секундный ролик: оставить второй и третий отрезки."
+      },
+      "shared_dependencies": [
+        {
+          "path": "BPG2/Assets/EinarFull/EinarFullSkin.bytes",
+          "sha256": "54aacc2efd0a2ef835c84487d88d7a7aa49936b5de62730cfe8632eb4efcb855"
+        }
+      ]
+    },
+    {
+      "id": "einar_run_newfast",
+      "version": 1,
+      "status": "user_accepted",
+      "type": "animation",
+      "character": "Einar native rig",
+      "title_ru": "Быстрый бег длинным шагом",
+      "description_ru": "Более быстрый бег длинным шагом с выраженной фазой полёта.",
+      "tags_ru": [
+        "бег",
+        "быстрый",
+        "длинный шаг",
+        "рывок",
+        "погоня",
+        "по прямой"
+      ],
+      "situations_ru": [
+        "погоня",
+        "преследование",
+        "быстрое перемещение по прямой"
+      ],
+      "source": "MotionGPT3: Take4_2, seed 9733",
+      "fps": 30,
+      "frames": 240,
+      "files": [
+        {
+          "path": "assets/animation-library/accepted-generations/einar_run_newfast/v1/Motion.anim",
+          "sha256": "55db217b37a0d7abda080d4dc86c44b1e18efc6ab03327af4a7618ea96b4a31d",
+          "bytes": 265669438
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_run_newfast/v1/Motion.bytes",
+          "sha256": "47edfa4e63ebb765974f29d10bec8283cb3d3b70a1fbed06bb4c08bf7ee47878",
+          "bytes": 10934408
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_run_newfast/v1/Camera.json",
+          "sha256": "b611a5dfdf6782c462e895c537aeb4603065429e665106642c2048c8196501ec",
+          "bytes": 14807
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_run_newfast/v1/Einar-NewFast.mp4",
+          "sha256": "aedd0ce60c0b9a0cbac1054bc477050271683756a1713b195e3ab6a7d196aa08",
+          "bytes": 14957174
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_run_newfast/v1/NewFast.blend",
+          "sha256": "1bb2e0a988e853fc3ab686f1ba9949d68e4d06e81a0a3461c2d5f47a2ce4af07",
+          "bytes": 91474803
+        }
+      ],
+      "limitations_ru": [
+        "Не является анимацией остановки или поворота",
+        "Олимпийская техника не подтверждена"
+      ],
+      "accepted": {
+        "date": "2026-11-17",
+        "statement": "первый бег убрать. остальные оставить и добавить в наш каталог бегов с описанием.",
+        "clarified": "Последний 24-секундный ролик: оставить второй и третий отрезки."
+      },
+      "shared_dependencies": [
+        {
+          "path": "BPG2/Assets/EinarFull/EinarFullSkin.bytes",
+          "sha256": "54aacc2efd0a2ef835c84487d88d7a7aa49936b5de62730cfe8632eb4efcb855"
+        }
+      ]
+    },
+    {
+      "id": "einar_cross_low",
+      "version": 1,
+      "status": "user_accepted",
+      "type": "animation",
+      "character": "Einar native rig",
+      "title_ru": "Низкий кросс с приседанием",
+      "description_ru": "Размашистый правый удар. Низкий кросс с приседанием, затем возврат в стойку.",
+      "tags_ru": [
+        "кросс",
+        "правый кулак",
+        "нелепый",
+        "мощный",
+        "Низкий кросс с приседанием"
+      ],
+      "situations_ru": [
+        "бой",
+        "преувеличенный замах"
+      ],
+      "source": "assets/characters/einar/motiongpt3/wide-cross/create.py",
+      "fps": 30,
+      "frames": 55,
+      "preview_chaos": 15,
+      "accepted": {
+        "date": "2026-11-17",
+        "statement": "средний и нижний оставляем"
+      },
+      "files": [
+        {
+          "path": "assets/animation-library/accepted-generations/einar_cross_low/v1/Low.blend",
+          "bytes": 91431607,
+          "sha256": "aa289a04eb132fe0e6a1f8594cebdcebc39c42f6244d7ba43a9bffdcd23eb020"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_cross_low/v1/Low.npy",
+          "bytes": 19664,
+          "sha256": "c2b3fd78d8b3e30a1c4c46a8b483983b711c4f0750e3a2fd8125c4ef0b5ff7b1"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_cross_low/v1/Low.bytes",
+          "bytes": 2505808,
+          "sha256": "883a912c3325acac62ccee9ce639c8dc5161a9a7387b22ff650e387c2b1d91a7"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_cross_low/v1/preview.mp4",
+          "bytes": 470783,
+          "sha256": "02a1c6c2b65bd5293e751e4d39cdbfd515bff16ec8562e013bf2107af37a31ed"
+        }
+      ]
+    },
+    {
+      "id": "einar_cross_high",
+      "version": 1,
+      "status": "user_accepted",
+      "type": "animation",
+      "character": "Einar native rig",
+      "title_ru": "Высокий кросс с замахом из-за головы",
+      "description_ru": "Размашистый правый удар. Высокий кросс с замахом из-за головы, затем возврат в стойку.",
+      "tags_ru": [
+        "кросс",
+        "правый кулак",
+        "нелепый",
+        "мощный",
+        "Высокий кросс с замахом из-за головы"
+      ],
+      "situations_ru": [
+        "бой",
+        "преувеличенный замах"
+      ],
+      "source": "assets/characters/einar/motiongpt3/wide-cross/create.py",
+      "fps": 30,
+      "frames": 55,
+      "preview_chaos": 15,
+      "accepted": {
+        "date": "2026-11-17",
+        "statement": "средний и нижний оставляем"
+      },
+      "files": [
+        {
+          "path": "assets/animation-library/accepted-generations/einar_cross_high/v1/High.blend",
+          "bytes": 91431987,
+          "sha256": "f337591ccf709a8027af9c225b6aae4a8488f8a8c5d5da1d6c4bf4d558c5d0b9"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_cross_high/v1/High.npy",
+          "bytes": 19664,
+          "sha256": "7b2f81e93ed1219aa7032bf7bab783256bfd5d4d9181f073cc941170ea5ffab8"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_cross_high/v1/High.bytes",
+          "bytes": 2505808,
+          "sha256": "5c9a1c60142a8e01b8cbe84ce913ade8d1cf2573a8219c5b4eee52a29552115a"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_cross_high/v1/preview.mp4",
+          "bytes": 474481,
+          "sha256": "efc9a15e2081d9f863893adbfc82438d2f9572eb5a481b2253cf7c309cb4546f"
+        }
+      ]
+    },
+    {
+      "id": "einar_wall_breach_player",
+      "version": 1,
+      "status": "user_accepted",
+      "type": "unity_video",
+      "character": "Einar native rig",
+      "title_ru": "Пролом стены с камеры игрока",
+      "description_ru": "Эйнар с разбега проходит через бетонную стену. Камера за правым плечом следует за ним через пролом.",
+      "tags_ru": [
+        "бег",
+        "стена",
+        "пролом",
+        "камера игрока",
+        "обломки"
+      ],
+      "situations_ru": [
+        "разрушение препятствия на бегу"
+      ],
+      "source": "Unity BPG2; 089b553; EinarWallShot.RenderPlayer; AltBuild",
+      "fps": 30,
+      "frames": 150,
+      "accepted": {
+        "date": "2026-11-18",
+        "statement": "отлично! сохрани такой вариант."
+      },
+      "limitations_ru": "Для повторного рендера нужны общий Unity-проект BPG2, материалы Эйнара и AltBuild. Версия принята до добавления падения.",
+      "files": [
+        {
+          "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v1/preview.mp4",
+          "bytes": 2448624,
+          "sha256": "c49a879f204f6a2ef019fcfb2e2e1860eb9d36afd86ee8fe653ed678719fa8f8"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v1/EinarWallShot.cs",
+          "bytes": 10959,
+          "sha256": "eb87126bae6b7983162fa79498c0af447ab65957d5abc66cc801054ea5a1b468"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v1/foley.wav",
+          "bytes": 882044,
+          "sha256": "d5172761903abd13a8c4abc5cd77a591f059fec9bd5ffa1c7a64d5b41ed9b9ed"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_run_altbuild/v1/Motion.bytes",
+          "bytes": 10934408,
+          "sha256": "42cdbda17701ffbf4b27b057610a703017b9c4a50193e68c8f6d2807f1d2ba7e"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_run_altbuild/v1/Camera.json",
+          "bytes": 15300,
+          "sha256": "d694ab466d8b14065f9b0fe955de57fd7d907b759eec0b281493a1783c3745af"
+        },
+        {
+          "path": "BPG2/Assets/EinarFull/PlayablePrefab/Einar.prefab",
+          "bytes": 1655160,
+          "sha256": "8bdd225cd9992632bfedc671281f698fce17e4123af59b10f8deac1d7fada563"
+        },
+        {
+          "path": "BPG2/Assets/EinarFull/PlayablePrefab/EinarMeshes.asset",
+          "bytes": 1288622389,
+          "sha256": "4a1fb3115015905e4ad6786569d483bd30ae3bbb0a30aace4ac9b7fffaa61109"
+        }
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "clip": "NewLaunch",
+      "status": "user_rejected",
+      "reason_ru": "Первый отрезок 24-секундного показа отклонён пользователем."
+    }
+  ],
+  "updated": "2026-11-18"
+}
