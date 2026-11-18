@@ -297,6 +297,167 @@
           "sha256": "4a1fb3115015905e4ad6786569d483bd30ae3bbb0a30aace4ac9b7fffaa61109"
         }
       ]
+    },
+    {
+      "id": "einar_wall_breach_player",
+      "version": 2,
+      "status": "user_accepted",
+      "type": "unity_video",
+      "character": "Einar native rig",
+      "title_ru": "Пролом стены с падением и отмахиванием от камней",
+      "description_ru": "Вид из-за правого плеча. Эйнар пригибается, подаёт механическое плечо вперёд и пробивает стену. За проломом падает с опорой на правую руку, встаёт, двумя взмахами отбрасывает камни и продолжает бег.",
+      "tags_ru": [
+        "камера игрока",
+        "пролом",
+        "стена",
+        "механическое плечо",
+        "падение",
+        "подъём",
+        "обломки",
+        "отмахивание",
+        "бег"
+      ],
+      "situations_ru": [
+        "прорыв через препятствие",
+        "восстановление после падения",
+        "бег сквозь обломки"
+      ],
+      "source": "Unity BPG2, EinarRecoveryShot.RenderPlayerRecovery, 9e2dee55f9177cf401755bfb84dcf4b4927484e7",
+      "fps": 30,
+      "frames": 222,
+      "resolution": [
+        1600,
+        900
+      ],
+      "accepted": {
+        "date": "2026-11-18",
+        "statement": "круто! тоже сохрани."
+      },
+      "limitations_ru": "Постановочный дубль. Повторная запись требует общего Unity-проекта BPG2 с материалами Эйнара. Для пересборки движения и звука используются исходные пути проекта.",
+      "files": [
+        {
+          "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v2/preview.mp4",
+          "bytes": 7589420,
+          "sha256": "e9ce3f19a54b6c6c5eaa32da437b4f8b57e1da89c96a2635a1ac7254efec0b17",
+          "source_path": "assets/characters/einar/previews/Einar-Wall-Breach-Player-Recovery-v2.mp4"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v2/foley.wav",
+          "bytes": 1305404,
+          "sha256": "9bc04b5033578e9652b49f5b74c9e9fae4d285654104ef5139d13145d075a0f5",
+          "source_path": "einar-player-recovery.wav"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v2/EinarRecoveryShot.cs",
+          "bytes": 16169,
+          "sha256": "eab007528e8e691dee614dcc4de99fca7d3d247c393ad7d288448585b6b4ba14",
+          "source_path": "BPG2/Assets/Editor/EinarRecoveryShot.cs"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v2/author_recovery.py",
+          "bytes": 5982,
+          "sha256": "0d7494d32e24d36eb702ccb949feeac70d61401f6cb64aa2b0b4eee84d8d3046",
+          "source_path": "assets/characters/einar/breach-recovery/author_recovery.py"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v2/Blocking.json",
+          "bytes": 28340,
+          "sha256": "df32cca20bb0a6c7c3b7eafe788deeb534ceebed0a5cfd34c4255b7e76d8d2df",
+          "source_path": "assets/characters/einar/breach-recovery/Blocking.json"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v2/Recovery.bytes",
+          "bytes": 10114328,
+          "sha256": "2863f86f8a5cb043e24826c814a3172c36faa770b0aeda86af6d5aad97be1a6e",
+          "source_path": "assets/characters/einar/breach-recovery/Recovery.bytes"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v2/mix_sound.py",
+          "bytes": 2733,
+          "sha256": "55fbf577684e167e14fd3c43401c562f20c7b4f7cd0325e3906c00571a5387e3",
+          "source_path": "assets/characters/einar/breach-recovery/mix_sound.py"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v2/shoulder-breach/Contact.json",
+          "bytes": 123,
+          "sha256": "7a11a867935bad2bdd8d46a4bbd21bd4cd657c037864947400cacfa41717d6ea",
+          "source_path": "assets/characters/einar/shoulder-breach/Contact.json"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v2/shoulder-breach/ShoulderCharge.bytes",
+          "bytes": 5740568,
+          "sha256": "7136827953112199f2b81c5cb2c06abeff0899697480ab13fa3aacaa757e1f02",
+          "source_path": "assets/characters/einar/shoulder-breach/ShoulderCharge.bytes"
+        },
+        {
+          "path": "assets/animation-library/accepted-generations/einar_wall_breach_player/v2/shoulder-breach/author_motion.py",
+          "bytes": 6085,
+          "sha256": "55093551ecd4a7f4b4eb6967298ed6f9b7af386de68f4aee6a97a3b72004e13d",
+          "source_path": "assets/characters/einar/shoulder-breach/author_motion.py"
+        }
+      ],
+      "shared_files": [
+        {
+          "path": "BPG2/Assets/EinarFull/PlayablePrefab/Einar.prefab",
+          "bytes": 1655160,
+          "sha256": "8bdd225cd9992632bfedc671281f698fce17e4123af59b10f8deac1d7fada563"
+        },
+        {
+          "path": "BPG2/Assets/EinarFull/PlayablePrefab/EinarMeshes.asset",
+          "bytes": 1288622389,
+          "sha256": "4a1fb3115015905e4ad6786569d483bd30ae3bbb0a30aace4ac9b7fffaa61109"
+        },
+        {
+          "path": "BPG2/Assets/EinarFull/EinarFullSkin.bytes",
+          "bytes": 151885689,
+          "sha256": "54aacc2efd0a2ef835c84487d88d7a7aa49936b5de62730cfe8632eb4efcb855"
+        },
+        {
+          "path": "BPG2/Assets/EinarWaveKneel/WaveKneel.bytes",
+          "bytes": 10979968,
+          "sha256": "7d3b625fb9374b098725acab9508d74f655a382ddb1ee7f24a90bfc1a69560fe"
+        },
+        {
+          "path": "BPG2/Assets/EinarMotionGPT3/SustainedSprints/AltBuild/Camera.json",
+          "bytes": 15300,
+          "sha256": "d694ab466d8b14065f9b0fe955de57fd7d907b759eec0b281493a1783c3745af"
+        },
+        {
+          "path": "BPG2/Assets/EinarMotionGPT3/SustainedSprints/AltBuild/Motion.bytes",
+          "bytes": 10934408,
+          "sha256": "42cdbda17701ffbf4b27b057610a703017b9c4a50193e68c8f6d2807f1d2ba7e"
+        },
+        {
+          "path": "BPG2/Assets/EinarMotionGPT3/PlayableRun30/Footsteps/gravel.wav",
+          "bytes": 17144,
+          "sha256": "58b70c8692c33f9e2eb53bcc621e400f3b483cff83b9dfcf4757ac0f5117d218"
+        },
+        {
+          "path": "BPG2/Assets/EinarMotionGPT3/PlayableRun30/Footsteps/gravel1.wav",
+          "bytes": 24178,
+          "sha256": "6d58578114732e88592002769de70551d08d6d78ce9494351963d2e5781450e8"
+        },
+        {
+          "path": "BPG2/Assets/EinarMotionGPT3/PlayableRun30/Footsteps/gravel2.wav",
+          "bytes": 22518,
+          "sha256": "5d50bb3350689aed5968063c07cd1a9d8b72f5998388b496411bbdb5c09371c7"
+        },
+        {
+          "path": "BPG2/Assets/EinarMotionGPT3/PlayableRun30/Footsteps/gravel3.wav",
+          "bytes": 22702,
+          "sha256": "034fa5361120ebb27ab22931f40d6505414c6c0279941ec2a4eb8f2be46fe229"
+        },
+        {
+          "path": "BPG2/Assets/EinarMotionGPT3/PlayableRun30/Footsteps/gravel4.wav",
+          "bytes": 17676,
+          "sha256": "c5fa45373c65dd68402546582040407602bbd3def86136f826ba6b44afbeaa91"
+        },
+        {
+          "path": "BPG2/Assets/EinarMotionGPT3/PlayableRun30/Footsteps/gravel5.wav",
+          "bytes": 24050,
+          "sha256": "71a8db9e47922635cfc150b0e6ebcba89a62873c8f7d992e30cca1b3826d6ed1"
+        }
+      ]
     }
   ],
   "excluded": [
