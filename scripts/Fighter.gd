@@ -1,4 +1,5 @@
 extends Node3D
+const RiggedVisual = preload("res://scripts/RiggedVisual.gd")
 ## Two fully procedural, readable fighting silhouettes. All geometry is authored here
 ## and can later be replaced by rigged CC0 GLB fighters without changing combat logic.
 signal move_strike(who, move_name)
@@ -21,6 +22,10 @@ var knockback := 0.0
 var defeated := false
 var animation_clock := 0.0
 var movement := 0.0
+var combo_count := 0
+var combo_window := 0.0
+var buffered_action := ""
+var last_hit_guarded := false
 var model: Node3D
 var chest: Node3D
 var head: Node3D
@@ -28,12 +33,21 @@ var left_arm: Node3D
 var right_arm: Node3D
 var left_leg: Node3D
 var right_leg: Node3D
+var rigged_visual: Node3D
 
 func setup(new_kind: int, direction: int) -> void:
 	kind = new_kind
 	facing = direction
 	name = "Bomj" if kind == 0 else "Gopnik"
 	_build_model()
+	# Replace primitive design placeholders with imported PBR skinned characters.
+	rigged_visual = RiggedVisual.new()
+	model.add_child(rigged_visual)
+	rigged_visual.setup(kind)
+	if rigged_visual.has_3d_asset():
+		chest.visible = false
+		left_leg.visible = false
+		right_leg.visible = false
 	# Meshes are authored with their faces along local +Z. The fighting lane is world X.
 	# A 70-degree three-quarter pose looks toward the enemy yet shows facial details
 	# to the camera at +Z. Direction -1 mirrors it for the CPU/opposite side.
@@ -49,16 +63,24 @@ func reset_fighter() -> void:
 	knockback = 0.0
 	defeated = false
 	movement = 0.0
+	combo_count = 0
+	combo_window = 0.0
+	buffered_action = ""
 	position.y = 0.0
 	rotation.z = 0.0
 	# Restore the actual animated model, not only the empty fighter root.
 	if model != null:
 		model.rotation.z = 0.0
 		model.position.y = 0.0
+	if is_instance_valid(rigged_visual):
+		rigged_visual.reset_pose()
 
 func tick(delta: float) -> void:
 	animation_clock += delta
 	hit_cooldown = maxf(0.0, hit_cooldown - delta)
+	combo_window = maxf(0.0, combo_window - delta)
+	if combo_window == 0.0:
+		combo_count = 0
 	if absf(knockback) > 0.01:
 		position.x = clampf(position.x + knockback * delta, -5.5, 5.5)
 		knockback = move_toward(knockback, 0.0, delta * 20.0)
@@ -68,9 +90,13 @@ func tick(delta: float) -> void:
 			strike_emitted = true
 			if action != "hurt" and action != "knockout":
 				move_strike.emit(self, action)
-		if action_time >= action_length:
+		if action_time >= action_length and not defeated:
 			action = ""
 			action_time = 0.0
+			if buffered_action != "":
+				var queued: String = buffered_action
+				buffered_action = ""
+				try_action(queued)
 	movement = move_toward(movement, 0.0, delta * 3.0)
 	_pose()
 
@@ -81,7 +107,13 @@ func walk(axis: float, delta: float) -> void:
 	position.x = clampf(position.x + axis * WALK_SPEED * delta, -5.4, 5.4)
 
 func try_action(move_name: String) -> bool:
-	if defeated or action != "" or is_guarding:
+	if defeated or is_guarding:
+		return false
+	if action != "":
+		# Buffered normals let a three-hit combo feel intentional on touch screens.
+		if move_name in ["punch", "kick"] and action in ["punch", "kick"] and action_time >= _strike_time() and action_time <= action_length:
+			buffered_action = move_name
+			return true
 		return false
 	var cost := 0.0
 	if move_name == "special1":
@@ -91,6 +123,9 @@ func try_action(move_name: String) -> bool:
 	if energy < cost:
 		return false
 	energy -= cost
+	if move_name == "punch" or move_name == "kick":
+		if combo_window <= 0.0:
+			combo_count = 0
 	action = move_name
 	action_time = 0.0
 	strike_emitted = false
@@ -118,6 +153,7 @@ func take_hit(damage: float, direction: int, force: float = 3.0) -> float:
 	energy = minf(MAX_ENERGY, energy + (5.0 if is_guarding else 11.0))
 	knockback = float(direction) * force * (0.35 if is_guarding else 1.0)
 	hit_cooldown = 0.22
+	last_hit_guarded = is_guarding
 	if hp <= 0.0:
 		defeated = true
 		action = "knockout"
@@ -125,10 +161,18 @@ func take_hit(damage: float, direction: int, force: float = 3.0) -> float:
 		action_length = 100000.0
 		died.emit(self)
 	elif not is_guarding:
+		buffered_action = ""
 		action = "hurt"
 		action_time = 0.0
 		action_length = 0.34
 	return actual
+
+func register_combo_hit() -> void:
+	if combo_window > 0.0:
+		combo_count = mini(3, combo_count + 1)
+	else:
+		combo_count = 1
+	combo_window = 0.96
 
 func gain_energy(amount: float) -> void:
 	energy = minf(MAX_ENERGY, energy + amount)
@@ -191,6 +235,8 @@ func _pose() -> void:
 		head.rotation.x = 0.0
 	if not defeated:
 		model.rotation.z = idle * 0.013
+	if is_instance_valid(rigged_visual):
+		rigged_visual.animate_combat(movement, action, action_time / maxf(0.01, action_length), is_guarding, action == "hurt", get_physics_process_delta_time())
 
 func _mat(c: Color, metallic: float = 0.0, roughness: float = 0.85, glowing: bool = false) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
